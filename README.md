@@ -17,7 +17,8 @@ see example generated pictures in [samples folder](./samples)
 * "draw a picture"
 
 ## Credits
-JarbasAl
+- JarbasAl
+- Inspired by [Random (Psychedelic) Art](https://jeremykun.com/2012/01/01/random-psychedelic-art/)
 
 ## Category
 **Entertainment**
