@@ -1,17 +1,21 @@
-from mycroft import MycroftSkill, intent_file_handler
-import random
 import math
-from PIL import Image
-from mycroft.skills.core import resting_screen_handler
+import random
 import tempfile
 import time
 from os.path import join
 
-class AlgorithmicArtSkill(MycroftSkill):
+from PIL import Image
+from ovos_workshop.decorators import intent_handler
+from ovos_workshop.decorators import resting_screen_handler
+from ovos_workshop.skills import OVOSSkill
+
+
+class AlgorithmicArtSkill(OVOSSkill):
+
     def update_picture(self):
         image, formula = psy_art()
-        path = join(tempfile.gettempdir(), "algorithmic_art{n}.png".
-                    format(n=time.time()))
+        path = join(tempfile.gettempdir(),
+                    "algorithmic_art{n}.png".format(n=time.time()))
         image.save(path, "PNG")
         self.gui['imgLink'] = path
         self.gui['formula'] = formula
@@ -21,17 +25,13 @@ class AlgorithmicArtSkill(MycroftSkill):
     def idle(self, message):
         self.update_picture()
 
-    @intent_file_handler('ShowImage.intent')
+    @intent_handler('ShowImage.intent')
     def handle_intent(self, message):
         self.update_picture()
 
 
-def create_skill():
-    return AlgorithmicArtSkill()
-
-
-
 class X:
+
     def eval(self, x, y):
         return x
 
@@ -40,6 +40,7 @@ class X:
 
 
 class Y:
+
     def eval(self, x, y):
         return y
 
@@ -48,6 +49,7 @@ class Y:
 
 
 class SinPi:
+
     def __init__(self, prob):
         self.arg = generate_formula(prob * prob)
 
@@ -59,6 +61,7 @@ class SinPi:
 
 
 class CosPi:
+
     def __init__(self, prob):
         self.arg = generate_formula(prob * prob)
 
@@ -70,6 +73,7 @@ class CosPi:
 
 
 class Times:
+
     def __init__(self, prob):
         self.lhs = generate_formula(prob * prob)
         self.rhs = generate_formula(prob * prob)
@@ -82,6 +86,7 @@ class Times:
 
 
 class Sum:
+
     def __init__(self, prob):
         self.lhs = generate_formula(prob * prob)
         self.rhs = generate_formula(prob * prob)
@@ -94,6 +99,7 @@ class Sum:
 
 
 class Subtract:
+
     def __init__(self, prob):
         self.lhs = generate_formula(prob * prob)
         self.rhs = generate_formula(prob * prob)
@@ -106,6 +112,7 @@ class Subtract:
 
 
 class Division:
+
     def __init__(self, prob):
         self.lhs = generate_formula(prob * prob)
         self.rhs = generate_formula(prob * prob)
@@ -121,6 +128,7 @@ class Division:
 
 
 class Remainder:
+
     def __init__(self, prob):
         self.lhs = generate_formula(prob * prob)
         self.rhs = generate_formula(prob * prob)
@@ -136,6 +144,7 @@ class Remainder:
 
 
 class SquareRoot:
+
     def __init__(self, prob):
         self.arg = generate_formula(prob * prob)
 
@@ -147,6 +156,7 @@ class SquareRoot:
 
 
 class Ln:
+
     def __init__(self, prob):
         self.arg = generate_formula(prob * prob)
 
@@ -165,12 +175,13 @@ class Ln:
 
 
 class Log:
+
     def __init__(self, prob, base=None):
         self.arg = generate_formula(prob * prob)
         self.base = base or random.randint(2, 100)
 
     def __str__(self):
-        return "log"+str(self.base)+"(" + str(self.arg) + ")"
+        return "log" + str(self.base) + "(" + str(self.arg) + ")"
 
     def eval(self, x, y):
         val = self.arg.eval(x, y)
@@ -184,11 +195,10 @@ class Log:
 
 def generate_formula(prob=0.99):
     if random.random() < prob:
-        return random.choice([SinPi, CosPi,
-                              Times, Sum, Subtract, Division, Remainder,
-                              SquareRoot,
-                              Ln, Log
-                              ])(prob)
+        return random.choice([
+            SinPi, CosPi, Times, Sum, Subtract, Division, Remainder,
+            SquareRoot, Ln, Log
+        ])(prob)
     else:
         return random.choice([X, Y])()
 
@@ -226,7 +236,7 @@ def psy_art():
             blueExp = generate_formula()
 
             formula = "red = " + str(redExp) + \
-                      "\ngreen = " + str(greenExp) +\
+                      "\ngreen = " + str(greenExp) + \
                       "\nblue = " + str(blueExp)
 
             image = plot_color(redExp, greenExp, blueExp)
